@@ -53,3 +53,6 @@
 
 # JetBrains
 /.idea
+
+# Docker
+/docker/mysql/init.sql

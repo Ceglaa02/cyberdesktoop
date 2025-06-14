@@ -1,6 +1,6 @@
 services:
   php:
-    container_name: php-fpm
+    container_name: php
     build:
       context: ./docker/php/
       dockerfile: ./Dockerfile
@@ -38,6 +38,28 @@ services:
       - "5173:5173"
     environment:
       - NODE_ENV=development
+    networks:
+      - cyber
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    restart: unless-stopped
+    env_file:
+      - ./app/backend/.env
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - cyber
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
     networks:
       - cyber
 
