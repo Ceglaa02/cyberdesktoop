@@ -1,21 +1,37 @@
 services:
-  apache2:
-    build:
-      context: ./
-      dockerfile: docker/apache2/Dockerfile
-    container_name: apache2
-    ports:
-      - "443:443"
-      - "80:80"
-    environment:
-      - APACHE_RUN_USER=${APACHE_RUN_USER}
-      - APACHE_RUN_GROUP=${APACHE_RUN_GROUP}
-
   php:
     container_name: php-fpm
     build:
-      context: ./
-      dockerfile: ./docker/php/Dockerfile
+      context: ./docker/php/
+      dockerfile: ./Dockerfile
     volumes:
-      - .:/var/www/html
+      - ./app/backend:/var/www/html
     working_dir: /var/www/html
+    networks:
+      - backend
+
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./app/backend:/var/www/html
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - php
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:
+  mysql_data:
