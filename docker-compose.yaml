@@ -8,15 +8,15 @@ services:
       - ./app/backend:/var/www/html
     working_dir: /var/www/html
     networks:
-      - backend
+      - cyber
 
   caddy:
     image: caddy:latest
     container_name: caddy
     restart: unless-stopped
     ports:
-      - "80:80"
       - "443:443"
+      - "80:80"
     volumes:
       - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
       - ./app/backend:/var/www/html
@@ -25,10 +25,24 @@ services:
     depends_on:
       - php
     networks:
-      - backend
+      - cyber
+
+  vue:
+    container_name: vue
+    build:
+      context: ./
+      dockerfile: ./docker/vue/Dockerfile
+    volumes:
+      - ./app/frontend:/app
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+    networks:
+      - cyber
 
 networks:
-  backend:
+  cyber:
     driver: bridge
 
 volumes:
