@@ -1,0 +1,21 @@
+services:
+  apache2:
+    build:
+      context: ./
+      dockerfile: docker/apache2/Dockerfile
+    container_name: apache2
+    ports:
+      - "443:443"
+      - "80:80"
+    environment:
+      - APACHE_RUN_USER=${APACHE_RUN_USER}
+      - APACHE_RUN_GROUP=${APACHE_RUN_GROUP}
+
+  php:
+    container_name: php-fpm
+    build:
+      context: ./
+      dockerfile: ./docker/php/Dockerfile
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
