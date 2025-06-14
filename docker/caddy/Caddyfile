@@ -2,11 +2,11 @@
     local_certs
 }
 
-http://cyberdesktop.loc {
-    redir https://cyberdesktop.loc{uri} 301
+http://localhost {
+    redir https://localhost{uri} 301
 }
 
-https://cyberdesktop.loc {
+https://localhost {
     root * /var/www/html/public
     encode gzip
     php_fastcgi php-fpm:9000
